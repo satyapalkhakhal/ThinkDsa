@@ -1,0 +1,183 @@
+export const topics = [
+    {
+        id: 1,
+        name: "Arrays & Hashing",
+        icon: "[]",
+        iconBg: "bg-indigo-50",
+        iconColor: "text-indigo-600",
+        totalProblems: 35,
+        solvedProblems: 8,
+        progress: 24,
+        progressColor: "bg-indigo-600",
+        description: "Master the fundamentals of array manipulation, slicing window techniques, and prefix sums efficiently."
+    },
+    {
+        id: 2,
+        name: "Two Pointers",
+        icon: "⚭",
+        iconBg: "bg-pink-50",
+        iconColor: "text-pink-600",
+        totalProblems: 15,
+        solvedProblems: 9,
+        progress: 60,
+        progressColor: "bg-pink-600"
+    },
+    {
+        id: 3,
+        name: "Stack",
+        icon: "◈",
+        iconBg: "bg-orange-50",
+        iconColor: "text-orange-600",
+        totalProblems: 22,
+        solvedProblems: 3,
+        progress: 12,
+        progressColor: "bg-orange-600"
+    },
+    {
+        id: 4,
+        name: "Binary Search",
+        icon: "🔍",
+        iconBg: "bg-teal-50",
+        iconColor: "text-teal-600",
+        totalProblems: 20,
+        solvedProblems: 1,
+        progress: 5,
+        progressColor: "bg-teal-600"
+    },
+    {
+        id: 5,
+        name: "Linked List",
+        icon: "🔗",
+        iconBg: "bg-purple-50",
+        iconColor: "text-purple-600",
+        totalProblems: 18,
+        solvedProblems: 0,
+        progress: 0,
+        progressColor: "bg-purple-600"
+    },
+    {
+        id: 6,
+        name: "Trees",
+        icon: "🌲",
+        iconBg: "bg-green-50",
+        iconColor: "text-green-600",
+        totalProblems: 45,
+        solvedProblems: 0,
+        progress: 0,
+        progressColor: "bg-green-600"
+    }
+];
+
+export const problems = {
+    1: [
+        {
+            id: 1,
+            number: "#001",
+            title: "Two Sum",
+            difficulty: "EASY",
+            difficultyColor: "bg-green-100 text-green-700",
+            completed: true,
+            hasNote: true,
+            hasSolution: true,
+            hasVideo: true,
+            description: "Find two numbers that add up to target.",
+            category: "Getting Started",
+            categoryColor: "border-green-500"
+        },
+        {
+            id: 2,
+            number: "#217",
+            title: "Contains Duplicate",
+            difficulty: "EASY",
+            difficultyColor: "bg-green-100 text-green-700",
+            completed: true,
+            hasNote: true,
+            hasSolution: true,
+            hasVideo: false,
+            description: "Check if any value appears at least twice.",
+            category: "Getting Started",
+            categoryColor: "border-green-500"
+        },
+        {
+            id: 3,
+            number: "#242",
+            title: "Valid Anagram",
+            difficulty: "EASY",
+            difficultyColor: "bg-green-100 text-green-700",
+            completed: false,
+            hasNote: false,
+            hasSolution: false,
+            hasVideo: true,
+            description: "Given two strings s and t, return true if t is...",
+            category: "Getting Started",
+            categoryColor: "border-green-500"
+        },
+        {
+            id: 4,
+            number: "#49",
+            title: "Group Anagrams",
+            difficulty: "MEDIUM",
+            difficultyColor: "bg-orange-100 text-orange-700",
+            completed: false,
+            hasNote: false,
+            hasSolution: true,
+            hasVideo: true,
+            description: "Group strings that are anagrams of each...",
+            category: "Core Concepts",
+            categoryColor: "border-orange-500"
+        },
+        {
+            id: 5,
+            number: "#347",
+            title: "Top K Frequent Elements",
+            difficulty: "MEDIUM",
+            difficultyColor: "bg-orange-100 text-orange-700",
+            completed: false,
+            hasNote: false,
+            hasSolution: true,
+            hasVideo: false,
+            description: "Given an integer array nums and an...",
+            category: "Core Concepts",
+            categoryColor: "border-orange-500"
+        },
+        {
+            id: 6,
+            number: "#238",
+            title: "Product of Array Except Self",
+            difficulty: "MEDIUM",
+            difficultyColor: "bg-orange-100 text-orange-700",
+            completed: false,
+            hasNote: true,
+            hasSolution: false,
+            hasVideo: false,
+            description: "Calculate the product of all elements...",
+            category: "Core Concepts",
+            categoryColor: "border-orange-500"
+        },
+        {
+            id: 7,
+            number: "#42",
+            title: "Trapping Rain Water",
+            difficulty: "HARD",
+            difficultyColor: "bg-red-100 text-red-700",
+            completed: true,
+            hasNote: true,
+            hasSolution: true,
+            hasVideo: true,
+            description: "Compute how much water can be trapp...",
+            category: "Mastery",
+            categoryColor: "border-red-500"
+        }
+    ]
+};
+
+export const user = {
+    name: "Alex",
+    avatar: "https://i.pravatar.cc/150?img=12",
+    stats: {
+        solved: 145,
+        total: 450,
+        todayIncrease: 5,
+        streak: 12
+    }
+};

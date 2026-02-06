@@ -18,8 +18,42 @@ connectDB();
 // Initialize Express app
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        const allowedOrigins = [
+            'http://localhost:5173',           // Local development
+            'http://localhost:3000',           // Alternative local port
+            'https://thinkscope.vercel.app',   // Production Vercel domain
+            /\.vercel\.app$/,                  // Any Vercel preview deployments
+        ];
+
+        // Check if origin is allowed
+        const isAllowed = allowedOrigins.some(allowed => {
+            if (typeof allowed === 'string') {
+                return origin === allowed;
+            }
+            // For regex patterns
+            return allowed.test(origin);
+        });
+
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            console.warn(`CORS blocked origin: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { topics } from '../data/mockData';
+import { topics, problems } from '../data/mockData';
 import Card from '../components/Card';
 import TopicCard from '../components/TopicCard';
 import BottomNav from '../components/BottomNav';
@@ -17,6 +17,32 @@ export default function Dashboard() {
         percentage: 0
     });
     const [loading, setLoading] = useState(true);
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    // Calculate stats from localStorage
+    const calculateLocalStats = () => {
+        let totalSolved = 0;
+        let totalProblems = 0;
+
+        // Count all problems across all topics
+        Object.values(problems).forEach(topicProblems => {
+            totalProblems += topicProblems.length;
+            topicProblems.forEach(problem => {
+                const saved = localStorage.getItem(`problem_${problem.id}_completed`);
+                const isCompleted = saved !== null ? JSON.parse(saved) : problem.completed;
+                if (isCompleted) totalSolved++;
+            });
+        });
+
+        const percentage = totalProblems > 0 ? Math.round((totalSolved / totalProblems) * 100) : 0;
+
+        setStats(prev => ({
+            ...prev,
+            solved: totalSolved,
+            total: totalProblems,
+            percentage
+        }));
+    };
 
     useEffect(() => {
         // Get user from localStorage
@@ -36,13 +62,30 @@ export default function Dashboard() {
                 avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=4F46E5&color=fff`
             });
 
-            // Fetch real stats from backend
-            fetchUserStats(token);
+            // Calculate stats from localStorage
+            calculateLocalStats();
+            setLoading(false);
+
+            // Optionally fetch from backend for streak and other data
+            // fetchUserStats(token);
         } catch (error) {
             console.error('Error parsing user data:', error);
             navigate('/login');
         }
-    }, [navigate]);
+    }, [navigate, refreshKey]);
+
+    // Listen for problem toggle events
+    useEffect(() => {
+        const handleProblemToggle = () => {
+            calculateLocalStats();
+        };
+
+        window.addEventListener('problemToggled', handleProblemToggle);
+
+        return () => {
+            window.removeEventListener('problemToggled', handleProblemToggle);
+        };
+    }, []);
 
     const fetchUserStats = async (token) => {
         try {
@@ -54,20 +97,16 @@ export default function Dashboard() {
 
             if (response.ok) {
                 const data = await response.json();
-                setStats({
-                    solved: data.data.completed || 0,
-                    total: data.data.total || 450,
+                setStats(prev => ({
+                    ...prev,
                     todayIncrease: 0, // TODO: Implement today's increase tracking
                     streak: 0, // TODO: Implement streak tracking
-                    percentage: data.data.percentage || 0
-                });
+                }));
             } else {
                 console.error('Failed to fetch stats');
             }
         } catch (error) {
             console.error('Error fetching stats:', error);
-        } finally {
-            setLoading(false);
         }
     };
 

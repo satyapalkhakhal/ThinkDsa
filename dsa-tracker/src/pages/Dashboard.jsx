@@ -1,9 +1,86 @@
-import { user, topics } from '../data/mockData';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { topics } from '../data/mockData';
 import Card from '../components/Card';
 import TopicCard from '../components/TopicCard';
 import BottomNav from '../components/BottomNav';
 
 export default function Dashboard() {
+    const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [stats, setStats] = useState({
+        solved: 0,
+        total: 450,
+        todayIncrease: 0,
+        streak: 0,
+        percentage: 0
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Get user from localStorage
+        const storedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+
+        if (!storedUser || !token) {
+            // If no user or token, redirect to login
+            navigate('/login');
+            return;
+        }
+
+        try {
+            const userData = JSON.parse(storedUser);
+            setUser({
+                ...userData,
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=4F46E5&color=fff`
+            });
+
+            // Fetch real stats from backend
+            fetchUserStats(token);
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+            navigate('/login');
+        }
+    }, [navigate]);
+
+    const fetchUserStats = async (token) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/progress/stats', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setStats({
+                    solved: data.data.completed || 0,
+                    total: data.data.total || 450,
+                    todayIncrease: 0, // TODO: Implement today's increase tracking
+                    streak: 0, // TODO: Implement streak tracking
+                    percentage: data.data.percentage || 0
+                });
+            } else {
+                console.error('Failed to fetch stats');
+            }
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading || !user) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 pb-20 md:pb-6">
             {/* Header */}
@@ -51,13 +128,15 @@ export default function Dashboard() {
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
                             </div>
-                            <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
-                                +{user.stats.todayIncrease} today
-                            </span>
+                            {stats.todayIncrease > 0 && (
+                                <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded">
+                                    +{stats.todayIncrease} today
+                                </span>
+                            )}
                         </div>
                         <p className="text-sm text-gray-600 mb-1">Solved</p>
                         <p className="text-2xl font-bold text-gray-900">
-                            {user.stats.solved} <span className="text-base text-gray-400 font-normal">/ {user.stats.total}</span>
+                            {stats.solved} <span className="text-base text-gray-400 font-normal">/ {stats.total}</span>
                         </p>
                     </Card>
 
@@ -71,7 +150,7 @@ export default function Dashboard() {
                         </div>
                         <p className="text-sm text-gray-600 mb-1">Streak</p>
                         <p className="text-2xl font-bold text-gray-900">
-                            {user.stats.streak} <span className="text-base text-gray-400 font-normal">Days</span>
+                            {stats.streak} <span className="text-base text-gray-400 font-normal">Days</span>
                         </p>
                     </Card>
                 </div>

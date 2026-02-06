@@ -7,6 +7,7 @@ import connectDB from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import problemRoutes from './routes/problemRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
+import topicRoutes from './routes/topicRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/topics', topicRoutes);
 app.use('/api', problemRoutes);
 app.use('/api/progress', progressRoutes);
 

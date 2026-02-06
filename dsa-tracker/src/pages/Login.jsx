@@ -1,15 +1,46 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Button from '../components/Button';
 
 export default function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        navigate('/dashboard');
+        setError('');
+        setLoading(true);
+
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Store token and user data
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('user', JSON.stringify(data.data.user));
+
+                // Redirect to dashboard
+                navigate('/dashboard');
+            } else {
+                setError(data.message || 'Login failed');
+            }
+        } catch (err) {
+            setError('Network error. Please check if backend is running.');
+            console.error('Login error:', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -20,6 +51,12 @@ export default function Login() {
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">THINKSCOPE</h1>
                         <p className="text-gray-600">Track your coding journey</p>
                     </div>
+
+                    {error && (
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-sm text-red-600">{error}</p>
+                        </div>
+                    )}
 
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div>
@@ -62,17 +99,23 @@ export default function Login() {
                             </a>
                         </div>
 
-                        <Button type="submit" variant="primary" size="lg" className="w-full">
-                            Sign In
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            size="lg"
+                            className="w-full"
+                            disabled={loading}
+                        >
+                            {loading ? 'Signing In...' : 'Sign In'}
                         </Button>
                     </form>
 
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Don't have an account?{' '}
-                            <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">
+                            <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
                                 Sign up
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>

@@ -8,8 +8,7 @@ const progressSchema = new mongoose.Schema({
         index: true
     },
     problemId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Problem',
+        type: Number,
         required: [true, 'Progress must be for a problem'],
         index: true
     },

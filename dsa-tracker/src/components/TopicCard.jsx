@@ -3,35 +3,48 @@ import { useNavigate } from 'react-router-dom';
 import { problems } from '../data/mockData';
 import Card from './Card';
 import ProgressBar from './ProgressBar';
+import { API_BASE_URL } from '../config/api';
 
 export default function TopicCard({ topic }) {
     const navigate = useNavigate();
     const [progress, setProgress] = useState(0);
     const [solvedCount, setSolvedCount] = useState(0);
 
-    const calculateProgress = () => {
-        const topicProblems = problems[topic.id] || [];
-        if (topicProblems.length === 0) {
-            setProgress(0);
-            setSolvedCount(0);
-            return;
+    const fetchProgress = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/progress/all`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const completedSet = new Set(data.data.completedProblems);
+
+                const topicProblems = problems[topic.id] || [];
+                if (topicProblems.length === 0) {
+                    setProgress(0);
+                    setSolvedCount(0);
+                    return;
+                }
+
+                const solved = topicProblems.filter(p => completedSet.has(p.id)).length;
+                const progressPercent = Math.round((solved / topicProblems.length) * 100);
+                setProgress(progressPercent);
+                setSolvedCount(solved);
+            }
+        } catch (error) {
+            console.error('Error fetching progress:', error);
         }
-
-        const solved = topicProblems.filter(problem => {
-            const saved = localStorage.getItem(`problem_${problem.id}_completed`);
-            return saved !== null ? JSON.parse(saved) : problem.completed;
-        }).length;
-
-        const progressPercent = Math.round((solved / topicProblems.length) * 100);
-        setProgress(progressPercent);
-        setSolvedCount(solved);
     };
 
     useEffect(() => {
-        calculateProgress();
+        fetchProgress();
 
         const handleProblemToggle = () => {
-            calculateProgress();
+            fetchProgress();
         };
 
         window.addEventListener('problemToggled', handleProblemToggle);

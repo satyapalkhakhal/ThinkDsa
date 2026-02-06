@@ -19,29 +19,28 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
 
-    // Calculate stats from localStorage
-    const calculateLocalStats = () => {
-        let totalSolved = 0;
-        let totalProblems = 0;
-
-        // Count all problems across all topics
-        Object.values(problems).forEach(topicProblems => {
-            totalProblems += topicProblems.length;
-            topicProblems.forEach(problem => {
-                const saved = localStorage.getItem(`problem_${problem.id}_completed`);
-                const isCompleted = saved !== null ? JSON.parse(saved) : problem.completed;
-                if (isCompleted) totalSolved++;
+    // Fetch stats from API
+    const fetchStats = async (token) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/progress/stats`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
-        });
 
-        const percentage = totalProblems > 0 ? Math.round((totalSolved / totalProblems) * 100) : 0;
-
-        setStats(prev => ({
-            ...prev,
-            solved: totalSolved,
-            total: totalProblems,
-            percentage
-        }));
+            if (response.ok) {
+                const data = await response.json();
+                setStats({
+                    solved: data.data.completed,
+                    total: data.data.total,
+                    percentage: Math.round((data.data.completed / data.data.total) * 100) || 0,
+                    todayIncrease: 0, // TODO: Implement
+                    streak: 0 // TODO: Implement
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
     };
 
     useEffect(() => {
@@ -62,12 +61,9 @@ export default function Dashboard() {
                 avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}&background=4F46E5&color=fff`
             });
 
-            // Calculate stats from localStorage
-            calculateLocalStats();
+            // Fetch stats from API
+            fetchStats(token);
             setLoading(false);
-
-            // Optionally fetch from backend for streak and other data
-            // fetchUserStats(token);
         } catch (error) {
             console.error('Error parsing user data:', error);
             navigate('/login');
@@ -77,7 +73,10 @@ export default function Dashboard() {
     // Listen for problem toggle events
     useEffect(() => {
         const handleProblemToggle = () => {
-            calculateLocalStats();
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetchStats(token);
+            }
         };
 
         window.addEventListener('problemToggled', handleProblemToggle);

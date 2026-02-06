@@ -1,15 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from './Card';
 import Badge from './Badge';
 
 export default function ProblemCard({ problem }) {
-    const [isCompleted, setIsCompleted] = useState(problem.completed);
+    // Get initial state from localStorage or problem data
+    const getInitialCompletedState = () => {
+        const saved = localStorage.getItem(`problem_${problem.id}_completed`);
+        return saved !== null ? JSON.parse(saved) : problem.completed;
+    };
+
+    const [isCompleted, setIsCompleted] = useState(getInitialCompletedState);
     const navigate = useNavigate();
 
     const toggleComplete = (e) => {
         e.stopPropagation();
-        setIsCompleted(!isCompleted);
+        const newState = !isCompleted;
+        setIsCompleted(newState);
+        // Save to localStorage
+        localStorage.setItem(`problem_${problem.id}_completed`, JSON.stringify(newState));
     };
 
     const handleCardClick = () => {

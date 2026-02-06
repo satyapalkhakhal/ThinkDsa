@@ -19,6 +19,8 @@ export default function ProblemCard({ problem }) {
         setIsCompleted(newState);
         // Save to localStorage
         localStorage.setItem(`problem_${problem.id}_completed`, JSON.stringify(newState));
+        // Dispatch custom event to update progress
+        window.dispatchEvent(new Event('problemToggled'));
     };
 
     const handleCardClick = () => {
@@ -45,12 +47,14 @@ export default function ProblemCard({ problem }) {
             onClick={handleCardClick}
         >
             <div className="flex items-start gap-3">
-                <input
-                    type="checkbox"
-                    checked={isCompleted}
-                    onChange={toggleComplete}
-                    className="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                    <input
+                        type="checkbox"
+                        checked={isCompleted}
+                        onChange={toggleComplete}
+                        className="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    />
+                </div>
 
                 <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-1">

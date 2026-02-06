@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { topics, problems } from '../data/mockData';
 import Card from '../components/Card';
@@ -13,6 +13,35 @@ export default function TopicDetail() {
     const topicProblems = problems[id] || [];
 
     const [activeFilter, setActiveFilter] = useState('All');
+    const [refreshKey, setRefreshKey] = useState(0); // Force re-render
+
+    // Calculate dynamic progress from localStorage
+    const getCompletedCount = () => {
+        return topicProblems.filter(problem => {
+            const saved = localStorage.getItem(`problem_${problem.id}_completed`);
+            return saved !== null ? JSON.parse(saved) : problem.completed;
+        }).length;
+    };
+
+    const solvedProblems = getCompletedCount();
+    const totalProblems = topicProblems.length;
+    const progress = totalProblems > 0 ? Math.round((solvedProblems / totalProblems) * 100) : 0;
+
+    // Listen for storage changes to update progress
+    useEffect(() => {
+        const handleStorageChange = () => {
+            setRefreshKey(prev => prev + 1);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        // Also listen for custom event from same window
+        window.addEventListener('problemToggled', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('problemToggled', handleStorageChange);
+        };
+    }, []);
 
     if (!topic) {
         return <div>Topic not found</div>;
@@ -35,7 +64,10 @@ export default function TopicDetail() {
 
     const getCategoryStats = (category) => {
         const categoryProblems = topicProblems.filter(p => p.category === category);
-        const solved = categoryProblems.filter(p => p.completed).length;
+        const solved = categoryProblems.filter(problem => {
+            const saved = localStorage.getItem(`problem_${problem.id}_completed`);
+            return saved !== null ? JSON.parse(saved) : problem.completed;
+        }).length;
         const total = categoryProblems.length;
         return `${solved}/${total} Done`;
     };
@@ -69,11 +101,11 @@ export default function TopicDetail() {
 
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-sm md:text-base font-medium text-gray-700">
-                            {topic.solvedProblems}/{topic.totalProblems} Solved
+                            {solvedProblems}/{totalProblems} Solved
                         </span>
-                        <span className="text-sm md:text-base font-bold text-blue-600">{topic.progress}%</span>
+                        <span className="text-sm md:text-base font-bold text-blue-600">{progress}%</span>
                     </div>
-                    <ProgressBar progress={topic.progress} color={topic.progressColor} height="h-3" />
+                    <ProgressBar progress={progress} color={topic.progressColor} height="h-3" />
                 </Card>
 
                 {/* Filters */}

@@ -5,9 +5,9 @@ export const topics = [
         icon: "[]",
         iconBg: "bg-indigo-50",
         iconColor: "text-indigo-600",
-        totalProblems: 35,
-        solvedProblems: 8,
-        progress: 24,
+        totalProblems: 7,
+        solvedProblems: 0,
+        progress: 0,
         progressColor: "bg-indigo-600",
         description: "Master the fundamentals of array manipulation, slicing window techniques, and prefix sums efficiently."
     },
@@ -17,9 +17,9 @@ export const topics = [
         icon: "⚭",
         iconBg: "bg-pink-50",
         iconColor: "text-pink-600",
-        totalProblems: 15,
-        solvedProblems: 9,
-        progress: 60,
+        totalProblems: 3,
+        solvedProblems: 0,
+        progress: 0,
         progressColor: "bg-pink-600"
     },
     {
@@ -28,9 +28,9 @@ export const topics = [
         icon: "◈",
         iconBg: "bg-orange-50",
         iconColor: "text-orange-600",
-        totalProblems: 22,
-        solvedProblems: 3,
-        progress: 12,
+        totalProblems: 2,
+        solvedProblems: 0,
+        progress: 0,
         progressColor: "bg-orange-600"
     },
     {
@@ -39,9 +39,9 @@ export const topics = [
         icon: "🔍",
         iconBg: "bg-teal-50",
         iconColor: "text-teal-600",
-        totalProblems: 20,
-        solvedProblems: 1,
-        progress: 5,
+        totalProblems: 2,
+        solvedProblems: 0,
+        progress: 0,
         progressColor: "bg-teal-600"
     },
     {
@@ -50,7 +50,7 @@ export const topics = [
         icon: "🔗",
         iconBg: "bg-purple-50",
         iconColor: "text-purple-600",
-        totalProblems: 18,
+        totalProblems: 3,
         solvedProblems: 0,
         progress: 0,
         progressColor: "bg-purple-600"
@@ -61,12 +61,13 @@ export const topics = [
         icon: "🌲",
         iconBg: "bg-green-50",
         iconColor: "text-green-600",
-        totalProblems: 45,
+        totalProblems: 3,
         solvedProblems: 0,
         progress: 0,
         progressColor: "bg-green-600"
     }
 ];
+
 
 export const problems = {
     1: [

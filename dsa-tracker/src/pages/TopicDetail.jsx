@@ -5,6 +5,7 @@ import Card from '../components/Card';
 import Badge from '../components/Badge';
 import ProgressBar from '../components/ProgressBar';
 import ProblemCard from '../components/ProblemCard';
+import { API_BASE_URL } from '../config/api';
 
 export default function TopicDetail() {
     const { id } = useParams();
@@ -13,35 +14,48 @@ export default function TopicDetail() {
     const topicProblems = problems[id] || [];
 
     const [activeFilter, setActiveFilter] = useState('All');
-    const [refreshKey, setRefreshKey] = useState(0); // Force re-render
+    const [completedProblems, setCompletedProblems] = useState(new Set());
+    const [loading, setLoading] = useState(true);
 
-    // Calculate dynamic progress from localStorage
-    const getCompletedCount = () => {
-        return topicProblems.filter(problem => {
-            const saved = localStorage.getItem(`problem_${problem.id}_completed`);
-            return saved !== null ? JSON.parse(saved) : problem.completed;
-        }).length;
+    // Fetch user progress from API
+    const fetchProgress = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/progress/all`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setCompletedProblems(new Set(data.data.completedProblems));
+            }
+        } catch (error) {
+            console.error('Error fetching progress:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const solvedProblems = getCompletedCount();
-    const totalProblems = topicProblems.length;
-    const progress = totalProblems > 0 ? Math.round((solvedProblems / totalProblems) * 100) : 0;
-
-    // Listen for storage changes to update progress
     useEffect(() => {
-        const handleStorageChange = () => {
-            setRefreshKey(prev => prev + 1);
+        fetchProgress();
+
+        // Listen for problem toggles to refresh
+        const handleToggle = () => {
+            fetchProgress();
         };
 
-        window.addEventListener('storage', handleStorageChange);
-        // Also listen for custom event from same window
-        window.addEventListener('problemToggled', handleStorageChange);
+        window.addEventListener('problemToggled', handleToggle);
 
         return () => {
-            window.removeEventListener('storage', handleStorageChange);
-            window.removeEventListener('problemToggled', handleStorageChange);
+            window.removeEventListener('problemToggled', handleToggle);
         };
     }, []);
+
+    const solvedProblems = topicProblems.filter(p => completedProblems.has(p.id)).length;
+    const totalProblems = topicProblems.length;
+    const progress = totalProblems > 0 ? Math.round((solvedProblems / totalProblems) * 100) : 0;
 
     if (!topic) {
         return <div>Topic not found</div>;
@@ -64,10 +78,7 @@ export default function TopicDetail() {
 
     const getCategoryStats = (category) => {
         const categoryProblems = topicProblems.filter(p => p.category === category);
-        const solved = categoryProblems.filter(problem => {
-            const saved = localStorage.getItem(`problem_${problem.id}_completed`);
-            return saved !== null ? JSON.parse(saved) : problem.completed;
-        }).length;
+        const solved = categoryProblems.filter(problem => completedProblems.has(problem.id)).length;
         const total = categoryProblems.length;
         return `${solved}/${total} Done`;
     };
@@ -142,7 +153,11 @@ export default function TopicDetail() {
 
                             <div className="space-y-3">
                                 {categoryProblems.map((problem) => (
-                                    <ProblemCard key={problem.id} problem={problem} />
+                                    <ProblemCard
+                                        key={problem.id}
+                                        problem={problem}
+                                        initialCompleted={completedProblems.has(problem.id)}
+                                    />
                                 ))}
                             </div>
                         </div>

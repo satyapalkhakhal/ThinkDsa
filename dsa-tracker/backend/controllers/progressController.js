@@ -80,6 +80,105 @@ export const toggleProblemCompletion = async (req, res) => {
 };
 
 /**
+ * @route   POST /api/progress/toggle-number
+ * @desc    Toggle problem completion by numeric ID (for frontend mock data)
+ * @access  Protected
+ */
+export const toggleProblemByNumber = async (req, res) => {
+    try {
+        const { problemId } = req.body;
+        const userId = req.user.id;
+
+        // Validate problemId is a number
+        if (!problemId || typeof problemId !== 'number') {
+            return res.status(400).json({
+                success: false,
+                message: 'Valid numeric problem ID is required'
+            });
+        }
+
+        // Find existing progress
+        let progress = await Progress.findOne({
+            userId,
+            problemId: problemId // Store as number
+        });
+
+        if (progress) {
+            // Toggle existing progress
+            progress.isCompleted = !progress.isCompleted;
+            await progress.save();
+        } else {
+            // Create new progress entry with isCompleted = true
+            progress = await Progress.create({
+                userId,
+                problemId: problemId,
+                isCompleted: true
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                problemId: progress.problemId,
+                isCompleted: progress.isCompleted,
+                completedAt: progress.completedAt
+            }
+        });
+
+    } catch (error) {
+        console.error('Error toggling progress:', error);
+
+        if (error.code === 11000) {
+            return res.status(409).json({
+                success: false,
+                message: 'Progress entry already exists'
+            });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: 'Error updating progress',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * @route   GET /api/progress/all
+ * @desc    Get all user's progress (for frontend)
+ * @access  Protected
+ */
+export const getAllProgress = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const progress = await Progress.find({ userId });
+
+        // Return as array of completed problem IDs for easy lookup
+        const completedProblems = progress
+            .filter(p => p.isCompleted)
+            .map(p => p.problemId);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                completedProblems,
+                total: progress.length,
+                completed: completedProblems.length
+            }
+        });
+
+    } catch (error) {
+        console.error('Error fetching progress:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching progress',
+            error: error.message
+        });
+    }
+};
+
+/**
  * @route   GET /api/progress/stats
  * @desc    Get user's overall progress statistics
  * @access  Protected
@@ -110,6 +209,7 @@ export const getUserStats = async (req, res) => {
             data: {
                 completed,
                 attempted,
+                total: 20, // Total problems in mock data
                 percentage: attempted > 0 ? Math.round((completed / attempted) * 100) : 0
             }
         });

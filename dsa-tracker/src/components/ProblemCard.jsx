@@ -1,17 +1,40 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from './Card';
 import Badge from './Badge';
 
 export default function ProblemCard({ problem }) {
     const [isCompleted, setIsCompleted] = useState(problem.completed);
+    const navigate = useNavigate();
 
     const toggleComplete = (e) => {
         e.stopPropagation();
         setIsCompleted(!isCompleted);
     };
 
+    const handleCardClick = () => {
+        navigate(`/problem/${problem.id}`);
+    };
+
+    const handleYouTubeClick = (e) => {
+        e.stopPropagation();
+        if (problem.youtubeUrl) {
+            window.open(problem.youtubeUrl, '_blank', 'noopener,noreferrer');
+        }
+    };
+
+    const handleLeetCodeClick = (e) => {
+        e.stopPropagation();
+        if (problem.leetcodeUrl) {
+            window.open(problem.leetcodeUrl, '_blank', 'noopener,noreferrer');
+        }
+    };
+
     return (
-        <Card className="p-4 hover:shadow-md transition-shadow duration-200">
+        <Card
+            className="p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+            onClick={handleCardClick}
+        >
             <div className="flex items-start gap-3">
                 <input
                     type="checkbox"
@@ -42,9 +65,15 @@ export default function ProblemCard({ problem }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                                 </svg>
                             )}
-                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
+                            <button
+                                onClick={handleLeetCodeClick}
+                                className="hover:text-blue-600 transition-colors"
+                                title="Open in LeetCode"
+                            >
+                                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
 
@@ -64,24 +93,37 @@ export default function ProblemCard({ problem }) {
                     <p className="text-sm text-gray-600 line-clamp-1">{problem.description}</p>
 
                     <div className="flex items-center gap-3 mt-3">
-                        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); }}
+                            className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+                        >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                             Note
                         </button>
-                        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); }}
+                            className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+                        >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                             </svg>
                             Solution
                         </button>
-                        <button className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                            </svg>
-                            Video
-                        </button>
+                        {problem.youtubeUrl && (
+                            <button
+                                onClick={handleYouTubeClick}
+                                className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700 font-medium"
+                                title="Watch tutorial on YouTube"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Video
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

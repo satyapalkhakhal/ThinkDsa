@@ -82,7 +82,9 @@ export const problems = {
             hasVideo: true,
             description: "Find two numbers that add up to target.",
             category: "Getting Started",
-            categoryColor: "border-green-500"
+            categoryColor: "border-green-500",
+            leetcodeUrl: "https://leetcode.com/problems/two-sum/",
+            youtubeUrl: "https://www.youtube.com/watch?v=KLlXCFG5TnA"
         },
         {
             id: 2,
@@ -93,10 +95,12 @@ export const problems = {
             completed: true,
             hasNote: true,
             hasSolution: true,
-            hasVideo: false,
+            hasVideo: true,
             description: "Check if any value appears at least twice.",
             category: "Getting Started",
-            categoryColor: "border-green-500"
+            categoryColor: "border-green-500",
+            leetcodeUrl: "https://leetcode.com/problems/contains-duplicate/",
+            youtubeUrl: "https://www.youtube.com/watch?v=3OamzN90kPg"
         },
         {
             id: 3,
@@ -108,9 +112,11 @@ export const problems = {
             hasNote: false,
             hasSolution: false,
             hasVideo: true,
-            description: "Given two strings s and t, return true if t is...",
+            description: "Given two strings s and t, return true if t is an anagram of s.",
             category: "Getting Started",
-            categoryColor: "border-green-500"
+            categoryColor: "border-green-500",
+            leetcodeUrl: "https://leetcode.com/problems/valid-anagram/",
+            youtubeUrl: "https://www.youtube.com/watch?v=9UtInBqnCgA"
         },
         {
             id: 4,
@@ -122,9 +128,11 @@ export const problems = {
             hasNote: false,
             hasSolution: true,
             hasVideo: true,
-            description: "Group strings that are anagrams of each...",
+            description: "Group strings that are anagrams of each other.",
             category: "Core Concepts",
-            categoryColor: "border-orange-500"
+            categoryColor: "border-orange-500",
+            leetcodeUrl: "https://leetcode.com/problems/group-anagrams/",
+            youtubeUrl: "https://www.youtube.com/watch?v=vzdNOK2oB2E"
         },
         {
             id: 5,
@@ -135,10 +143,12 @@ export const problems = {
             completed: false,
             hasNote: false,
             hasSolution: true,
-            hasVideo: false,
-            description: "Given an integer array nums and an...",
+            hasVideo: true,
+            description: "Given an integer array nums and an integer k, return the k most frequent elements.",
             category: "Core Concepts",
-            categoryColor: "border-orange-500"
+            categoryColor: "border-orange-500",
+            leetcodeUrl: "https://leetcode.com/problems/top-k-frequent-elements/",
+            youtubeUrl: "https://www.youtube.com/watch?v=YPTqKIgVk-k"
         },
         {
             id: 6,
@@ -149,10 +159,12 @@ export const problems = {
             completed: false,
             hasNote: true,
             hasSolution: false,
-            hasVideo: false,
-            description: "Calculate the product of all elements...",
+            hasVideo: true,
+            description: "Calculate the product of all elements except the current element.",
             category: "Core Concepts",
-            categoryColor: "border-orange-500"
+            categoryColor: "border-orange-500",
+            leetcodeUrl: "https://leetcode.com/problems/product-of-array-except-self/",
+            youtubeUrl: "https://www.youtube.com/watch?v=bNvIQI2wAjk"
         },
         {
             id: 7,
@@ -164,9 +176,11 @@ export const problems = {
             hasNote: true,
             hasSolution: true,
             hasVideo: true,
-            description: "Compute how much water can be trapp...",
+            description: "Compute how much water can be trapped after raining.",
             category: "Mastery",
-            categoryColor: "border-red-500"
+            categoryColor: "border-red-500",
+            leetcodeUrl: "https://leetcode.com/problems/trapping-rain-water/",
+            youtubeUrl: "https://www.youtube.com/watch?v=ZI2z5pq0TqA"
         }
     ]
 };

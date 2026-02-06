@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import TopicDetail from './pages/TopicDetail';
+import ProblemDetail from './pages/ProblemDetail';
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/topic/:id" element={<TopicDetail />} />
+                <Route path="/problem/:id" element={<ProblemDetail />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
             </Routes>
         </BrowserRouter>

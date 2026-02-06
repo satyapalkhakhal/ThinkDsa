@@ -8,7 +8,7 @@ export default function BottomNav() {
         { id: 'home', label: 'Home', path: '/dashboard', icon: 'home' },
         { id: 'topics', label: 'Topics', path: '/dashboard', icon: 'grid' },
         { id: 'saved', label: 'Saved', path: '/dashboard', icon: 'bookmark' },
-        { id: 'profile', label: 'Profile', path: '/dashboard', icon: 'user' }
+        { id: 'profile', label: 'Profile', path: '/profile', icon: 'user' }
     ];
 
     const isActive = (path) => location.pathname === path;

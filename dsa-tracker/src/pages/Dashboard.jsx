@@ -110,6 +110,14 @@ export default function Dashboard() {
         }
     };
 
+    const handleLogout = () => {
+        // Clear localStorage
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        // Redirect to login
+        navigate('/login');
+    };
+
     if (loading || !user) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -126,17 +134,26 @@ export default function Dashboard() {
             {/* Header */}
             <header className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-40">
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
-                    <button className="p-2 md:hidden">
-                        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
                     <h1 className="text-xl md:text-2xl font-bold text-gray-900">THINKSCOPE</h1>
-                    <img
-                        src={user.avatar}
-                        alt="User avatar"
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
-                    />
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleLogout}
+                            className="hidden md:flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Logout"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            <span>Logout</span>
+                        </button>
+                        <img
+                            src={user.avatar}
+                            alt="User avatar"
+                            className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover cursor-pointer"
+                            onClick={() => navigate('/profile')}
+                            title="Profile"
+                        />
+                    </div>
                 </div>
             </header>
 

@@ -21,8 +21,13 @@ const app = express();
 // CORS Configuration
 const corsOptions = {
     origin: function (origin, callback) {
+        console.log('🔍 CORS Request from origin:', origin);
+
         // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
+        if (!origin) {
+            console.log('✅ Allowing request with no origin');
+            return callback(null, true);
+        }
 
         const allowedOrigins = [
             'http://localhost:5173',           // Local development
@@ -41,10 +46,13 @@ const corsOptions = {
         });
 
         if (isAllowed) {
+            console.log('✅ CORS allowed for origin:', origin);
             callback(null, true);
         } else {
-            console.warn(`CORS blocked origin: ${origin}`);
-            callback(new Error('Not allowed by CORS'));
+            console.warn('❌ CORS blocked origin:', origin);
+            // TEMPORARY: Allow all origins for debugging
+            console.log('⚠️  TEMPORARILY allowing blocked origin for debugging');
+            callback(null, true);
         }
     },
     credentials: true,

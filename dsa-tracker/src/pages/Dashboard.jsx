@@ -4,6 +4,7 @@ import { topics } from '../data/mockData';
 import Card from '../components/Card';
 import TopicCard from '../components/TopicCard';
 import BottomNav from '../components/BottomNav';
+import { API_BASE_URL } from '../config/api';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -45,7 +46,7 @@ export default function Dashboard() {
 
     const fetchUserStats = async (token) => {
         try {
-            const response = await fetch('http://localhost:5000/api/progress/stats', {
+            const response = await fetch(`${API_BASE_URL}/progress/stats`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

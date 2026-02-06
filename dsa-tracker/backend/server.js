@@ -32,6 +32,8 @@ const corsOptions = {
         const allowedOrigins = [
             'http://localhost:5173',           // Local development
             'http://localhost:3000',           // Alternative local port
+            'https://thinkscope.in',           // Production custom domain
+            'https://www.thinkscope.in',       // Production custom domain with www
             'https://thinkscope.vercel.app',   // Production Vercel domain
             /\.vercel\.app$/,                  // Any Vercel preview deployments
         ];

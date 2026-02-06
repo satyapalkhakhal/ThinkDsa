@@ -89,18 +89,24 @@ export const toggleProblemByNumber = async (req, res) => {
         const { problemId } = req.body;
         const userId = req.user.id;
 
-        // Validate problemId is a number
-        if (!problemId || typeof problemId !== 'number') {
+        console.log('Toggle request:', { userId, problemId, type: typeof problemId });
+
+        // Validate problemId
+        const numericProblemId = Number(problemId);
+        if (!problemId || isNaN(numericProblemId)) {
             return res.status(400).json({
                 success: false,
-                message: 'Valid numeric problem ID is required'
+                message: `Valid numeric problem ID is required. Received: ${problemId}`
             });
         }
+
+        // Use the numeric value
+        const pid = numericProblemId;
 
         // Find existing progress
         let progress = await Progress.findOne({
             userId,
-            problemId: problemId // Store as number
+            problemId: pid // Store as number
         });
 
         if (progress) {
@@ -111,7 +117,7 @@ export const toggleProblemByNumber = async (req, res) => {
             // Create new progress entry with isCompleted = true
             progress = await Progress.create({
                 userId,
-                problemId: problemId,
+                problemId: pid,
                 isCompleted: true
             });
         }
